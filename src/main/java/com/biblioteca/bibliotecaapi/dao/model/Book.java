@@ -1,9 +1,6 @@
 package com.biblioteca.bibliotecaapi.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.UUID;
@@ -13,7 +10,11 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(length=50, nullable=false)
     private String title;
+
+    @Column(length=50, nullable=false)
     private String author;
     private Date published;
 
