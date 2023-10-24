@@ -1,6 +1,6 @@
-package com.biblioteca.bibliotecaapi.domain.repository;
+package com.biblioteca.bibliotecaapi.dao.repository;
 
-import com.biblioteca.bibliotecaapi.domain.model.Book;
+import com.biblioteca.bibliotecaapi.dao.model.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

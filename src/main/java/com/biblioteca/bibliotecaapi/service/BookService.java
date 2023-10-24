@@ -1,32 +1,70 @@
 package com.biblioteca.bibliotecaapi.service;
 
 
-import com.biblioteca.bibliotecaapi.domain.model.Book;
-import com.biblioteca.bibliotecaapi.domain.repository.BookRepository;
+import com.biblioteca.bibliotecaapi.dao.model.Book;
+import com.biblioteca.bibliotecaapi.dao.repository.BookRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.management.RuntimeErrorException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class BookService {
+public class BookService implements BookServiceOperations {
     @Autowired
-    BookRepository repository;
+    private BookRepository repository;
 
-    public Iterable<Book> getAllBooks() {
+    public boolean exists(UUID id) {
+        return repository.existsById(id);
+    }
+
+    public void insert(Book book) {
+        repository.save(book);
+    }
+
+    public Book getOne(UUID id) {
+        Optional<Book> bookTarget = repository.findById(id);
+
+        if (bookTarget.isEmpty()) {
+            throw new RuntimeErrorException(new Error(), "Could not find book");
+        }
+        return bookTarget.get();
+    }
+
+    public List<Book> getAll() {
         return repository.findAll();
     }
 
-    public Book getBookById(UUID id) {
-        Optional<Book> foundBook = repository.findById(id);
-        if (foundBook.isEmpty()) {
-            throw new RuntimeException("Could not find book");
+    public Book update(UUID id, Book bookUpdates) {
+        Optional<Book> oldBook = repository.findById(id);
+
+        if (oldBook.isEmpty()) {
+            throw new RuntimeErrorException(new Error(), "Could not find book");
         }
-        return foundBook.get();
+        Book newBook = new Book();
+        BeanUtils.copyProperties(bookUpdates, newBook);
+        newBook.setId(oldBook.get().getId());
+
+        return repository.save(newBook);
     }
 
-    public Book insertBook(Book book) {
-        return repository.save(book);
+    public void updateAvailability(UUID id) {
+        Optional<Book> target = repository.findById(id);
+
+        if (target.isEmpty()) {
+            throw new RuntimeErrorException(new Error(), "Could not find book");
+        }
+        target.get().setAvailable(!target.get().isAvailable());
+        repository.save(target.get());
+    }
+
+    public void delete(UUID id) {
+        if (!exists(id)) {
+            throw new RuntimeErrorException(new Error(), "Could not find book");
+        }
+        repository.deleteById(id);
     }
 }

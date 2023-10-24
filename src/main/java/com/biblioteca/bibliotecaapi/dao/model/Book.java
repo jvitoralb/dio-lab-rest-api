@@ -1,4 +1,4 @@
-package com.biblioteca.bibliotecaapi.domain.model;
+package com.biblioteca.bibliotecaapi.dao.model;
 
 import jakarta.persistence.*;
 
@@ -11,12 +11,15 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(length=50, nullable=false)
+    @Column(length=75, nullable=false)
     private String title;
 
-    @Column(length=50, nullable=false)
+    @Column(length=75, nullable=false)
     private String author;
+
+    @Column(name = "publish_date")
     private Date published;
+    private boolean available = true;
 
     public UUID getId() {
         return id;
@@ -48,5 +51,13 @@ public class Book {
 
     public void setPublished(Date published) {
         this.published = published;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 }
