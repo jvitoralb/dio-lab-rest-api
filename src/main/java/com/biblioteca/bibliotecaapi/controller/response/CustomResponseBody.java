@@ -2,14 +2,20 @@ package com.biblioteca.bibliotecaapi.controller.response;
 
 import java.util.Date;
 
-public class ResponseBody {
+public class CustomResponseBody {
     private int status;
     private Date timestamp;
     private Object message;
 
-    public ResponseBody(int status) {
+    public CustomResponseBody(int status) {
         this.status = status;
         this.timestamp = new Date();
+    }
+
+    public CustomResponseBody(int status, Object message) {
+        this.status = status;
+        this.timestamp = new Date();
+        this.message = message;
     }
 
     public int getStatus() {
