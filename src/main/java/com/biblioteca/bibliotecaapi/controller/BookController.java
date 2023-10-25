@@ -1,12 +1,11 @@
 package com.biblioteca.bibliotecaapi.controller;
 
-import com.biblioteca.bibliotecaapi.controller.response.ResponseBody;
+import com.biblioteca.bibliotecaapi.controller.response.CustomResponseBody;
 import com.biblioteca.bibliotecaapi.dao.model.Book;
 import com.biblioteca.bibliotecaapi.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -17,39 +16,41 @@ import java.util.UUID;
 public class BookController {
     @Autowired
     private BookService service;
+    private CustomResponseBody res;
+
+    public BookController() {
+        res = new CustomResponseBody(1);
+    }
 
     @PostMapping
-    public ResponseEntity<ResponseBody> create(@RequestBody Book book) {
+    public ResponseEntity<CustomResponseBody> create(@RequestBody Book book) {
         service.insert(book);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseBody(1));
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
     @GetMapping
-    public ResponseEntity<ResponseBody> readAll() {
-        ResponseBody resBody = new ResponseBody(1);
-        resBody.setMessage(service.getAll());
-        return ResponseEntity.status(HttpStatus.OK).body(resBody);
+    public ResponseEntity<CustomResponseBody> readAll() {
+        res.setMessage(service.getAll());
+        return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseBody> read(@PathVariable UUID id) {
-        ResponseBody resBody = new ResponseBody(1);
-        resBody.setMessage(service.getOne(id));
-        return ResponseEntity.status(HttpStatus.OK).body(resBody);
+    public ResponseEntity<CustomResponseBody> read(@PathVariable UUID id) {
+        res.setMessage(service.getOne(id));
+        return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseBody> update(@PathVariable UUID id, @RequestBody Book bookUpdates) {
+    public ResponseEntity<CustomResponseBody> update(@PathVariable UUID id, @RequestBody Book bookUpdates) {
         // precisa garantir que todas as são informações do livro passadas no RequestBody
-        ResponseBody resBody = new ResponseBody(1);
-        resBody.setMessage(service.update(id, bookUpdates));
-        return ResponseEntity.status(HttpStatus.OK).body(resBody);
+        res.setMessage(service.update(id, bookUpdates));
+        return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @PutMapping("/{id}/lend")
-    public ResponseEntity<ResponseBody> updateAvailability(@PathVariable UUID id) {
+    public ResponseEntity<CustomResponseBody> updateAvailability(@PathVariable UUID id) {
         service.updateAvailability(id);
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseBody(1));
+        return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @DeleteMapping("/{id}")
