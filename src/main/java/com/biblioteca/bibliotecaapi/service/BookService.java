@@ -1,16 +1,17 @@
 package com.biblioteca.bibliotecaapi.service;
 
 
+import com.biblioteca.bibliotecaapi.controller.exception.BusinessException;
 import com.biblioteca.bibliotecaapi.dao.model.Book;
 import com.biblioteca.bibliotecaapi.dao.repository.BookRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.RuntimeErrorException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 
 @Service
 public class BookService implements BookServiceOperations {
@@ -29,7 +30,7 @@ public class BookService implements BookServiceOperations {
         Optional<Book> bookTarget = repository.findById(id);
 
         if (bookTarget.isEmpty()) {
-            throw new RuntimeErrorException(new Error(), "Could not find book");
+            throw new BusinessException("Não foi possível encontrar recurso de ID " + id);
         }
         return bookTarget.get();
     }
@@ -42,7 +43,7 @@ public class BookService implements BookServiceOperations {
         Optional<Book> oldBook = repository.findById(id);
 
         if (oldBook.isEmpty()) {
-            throw new RuntimeErrorException(new Error(), "Could not find book");
+            throw new BusinessException("Não foi possível encontrar recurso de ID " + id);
         }
         Book newBook = new Book();
         BeanUtils.copyProperties(bookUpdates, newBook);
@@ -51,20 +52,20 @@ public class BookService implements BookServiceOperations {
         return repository.save(newBook);
     }
 
+    public void delete(UUID id) {
+        if (!exists(id)) {
+            throw new BusinessException("Não foi possível encontrar recurso de ID " + id);
+        }
+        repository.deleteById(id);
+    }
+
     public void updateAvailability(UUID id) {
         Optional<Book> target = repository.findById(id);
 
         if (target.isEmpty()) {
-            throw new RuntimeErrorException(new Error(), "Could not find book");
+            throw new BusinessException("Não foi possível encontrar recurso de ID " + id);
         }
         target.get().setAvailable(!target.get().isAvailable());
         repository.save(target.get());
-    }
-
-    public void delete(UUID id) {
-        if (!exists(id)) {
-            throw new RuntimeErrorException(new Error(), "Could not find book");
-        }
-        repository.deleteById(id);
     }
 }
