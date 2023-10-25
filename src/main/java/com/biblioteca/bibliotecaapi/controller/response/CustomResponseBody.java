@@ -4,20 +4,20 @@ import java.util.Date;
 
 public class ResponseBody {
     private int status;
-    private Date date;
+    private Date timestamp;
     private Object message;
 
     public ResponseBody(int status) {
         this.status = status;
-        this.date = new Date();
+        this.timestamp = new Date();
     }
 
     public int getStatus() {
         return status;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getTimestamp() {
+        return timestamp;
     }
 
     public Object getMessage() {
