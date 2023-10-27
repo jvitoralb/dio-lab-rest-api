@@ -71,46 +71,37 @@ public class BookService implements ServiceOperations<Book, UUID> {
     }
 
     public Loan loanBook(UUID id, Customer customer) {
-        Optional<Book> targetBook = repository.findById(id);
-
-        if (targetBook.isEmpty()) {
-            throw new BusinessException("Não foi possível encontrar recurso de ID " + id);
-        }
-        Customer targetCustomer = customerRepository.findByCpf(customer.getCpf());
-
-        if (targetCustomer == null) {
-            throw new BusinessException("Não foi possível encontrar recurso - Cliente de CPF " + customer.getCpf());
-        }
+        Book targetBook = repository.findById(id).orElseThrow(
+            () -> new BusinessException("Não foi possível encontrar livro de ID " + id)
+        );
+        Customer targetCustomer = customerRepository.findByCpf(customer.getCpf()).orElseThrow(
+            () -> new BusinessException("Não foi possível encontrar cliente de CPF " + customer.getCpf())
+        );
 
         LocalDate expiresAt = LocalDate.now().plusDays(7);
-        Loan loanDetails = loanRepository.save(new Loan(targetBook.get(), targetCustomer, expiresAt));
+        Loan loanDetails = loanRepository.save(new Loan(targetBook, targetCustomer, expiresAt));
 
-        targetBook.get().setAvailable(false);
-        repository.save(targetBook.get());
+        targetBook.setAvailable(false);
+        repository.save(targetBook);
 
         return loanDetails;
     }
 
     public Loan returnBook(UUID id, Customer customer) {
-        Optional<Book> targetBook = repository.findById(id);
+        Book targetBook = repository.findById(id).orElseThrow(
+            () -> new BusinessException("Não foi possível encontrar livro de ID " + id)
+        );
+        Customer targetCustomer = customerRepository.findByCpf(customer.getCpf()).orElseThrow(
+            () -> new BusinessException("Não foi possível encontrar cliente de CPF " + customer.getCpf())
+        );
 
-        if (targetBook.isEmpty()) {
-            throw new BusinessException("Não foi possível encontrar recurso - Livro de ID " + id);
-        }
-        Customer targetCustomer = customerRepository.findByCpf(customer.getCpf());
+        targetBook.setAvailable(true);
+        repository.save(targetBook);
 
-        if (targetCustomer == null) {
-            throw new BusinessException("Não foi possível encontrar recurso - Cliente de CPF " + customer.getCpf());
-        }
+        Loan loan = loanRepository.findByCustomer(targetCustomer).orElseThrow(
+            () -> new BusinessException("Não foi possível encontrar empréstimo do Cliente de CPF " + customer.getCpf())
+        );
 
-        targetBook.get().setAvailable(true);
-        repository.save(targetBook.get());
-
-        Loan loan = loanRepository.findByCustomer(targetCustomer);
-
-        if (loan == null) {
-            throw new BusinessException("Não foi possível encontrar recurso - Empréstimo do Cliente de CPF " + customer.getCpf());
-        }
         loan.setFinishedAt(LocalDate.now());
         loan.setClosed(true);
         return loanRepository.save(loan);

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 
@@ -30,32 +29,25 @@ public class CustomerService implements ServiceOperations<Customer, UUID> {
     }
 
     public Customer getOne(UUID id) {
-        Optional<Customer> target = repository.findById(id);
-
-        if (target.isEmpty()) {
-            throw new BusinessException("Não foi possível encontrar recurso de ID " + id);
-        }
-        return target.get();
+        return repository.findById(id).orElseThrow(
+            () -> new BusinessException("Não foi possível encontrar cliente de ID " + id)
+        );
     }
 
     public Customer getOneByCPF(String cpf) {
-        Customer target = repository.findByCpf(cpf);
-
-        if (target == null) {
-            throw new BusinessException("Não foi possível encontrar recurso de CPF " + cpf);
-        }
-        return target;
+        return repository.findByCpf(cpf).orElseThrow(
+            () -> new BusinessException("Não foi possível encontrar cliente de CPF " + cpf)
+        );
     }
 
     public Customer update(UUID id, Customer customerUpdates) {
-        Optional<Customer> oldCustomerInfo = repository.findById(id);
+        Customer oldCustomerInfo = repository.findById(id).orElseThrow(
+            () -> new BusinessException("Não foi possível encontrar cliente de ID " + id)
+        );
 
-        if (oldCustomerInfo.isEmpty()) {
-            throw new BusinessException("Não foi possível encontrar recurso de ID " + id);
-        }
         Customer newCustomerInfo = new Customer();
         BeanUtils.copyProperties(customerUpdates, newCustomerInfo);
-        newCustomerInfo.setId(oldCustomerInfo.get().getId());
+        newCustomerInfo.setId(oldCustomerInfo.getId());
 
         return repository.save(newCustomerInfo);
     }
