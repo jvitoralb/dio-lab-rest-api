@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 
@@ -38,12 +37,9 @@ public class BookService implements ServiceOperations<Book, UUID> {
     }
 
     public Book getOne(UUID id) {
-        Optional<Book> bookTarget = repository.findById(id);
-
-        if (bookTarget.isEmpty()) {
-            throw new BusinessException("Não foi possível encontrar recurso de ID " + id);
-        }
-        return bookTarget.get();
+        return repository.findById(id).orElseThrow(
+            () -> new BusinessException("Não foi possível encontrar livro de ID " + id)
+        );
     }
 
     public List<Book> getAll() {
@@ -51,21 +47,20 @@ public class BookService implements ServiceOperations<Book, UUID> {
     }
 
     public Book update(UUID id, Book bookUpdates) {
-        Optional<Book> oldBook = repository.findById(id);
+        Book oldBook = repository.findById(id).orElseThrow(
+            () -> new BusinessException("Não foi possível encontrar livro de ID " + id)
+        );
 
-        if (oldBook.isEmpty()) {
-            throw new BusinessException("Não foi possível encontrar recurso de ID " + id);
-        }
         Book newBook = new Book();
         BeanUtils.copyProperties(bookUpdates, newBook);
-        newBook.setId(oldBook.get().getId());
+        newBook.setId(oldBook.getId());
 
         return repository.save(newBook);
     }
 
     public void delete(UUID id) {
         if (!exists(id)) {
-            throw new BusinessException("Não foi possível encontrar recurso de ID " + id);
+            throw new BusinessException("Não foi possível encontrar livro de ID " + id);
         }
         repository.deleteById(id);
     }

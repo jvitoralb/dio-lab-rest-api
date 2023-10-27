@@ -54,7 +54,7 @@ public class CustomerService implements ServiceOperations<Customer, UUID> {
 
     public void delete(UUID id) {
         if (!exists(id)) {
-            throw new BusinessException("Não foi possível encontrar recurso de ID " + id);
+            throw new BusinessException("Não foi possível encontrar cliente de ID " + id);
         }
         repository.deleteById(id);
     }
