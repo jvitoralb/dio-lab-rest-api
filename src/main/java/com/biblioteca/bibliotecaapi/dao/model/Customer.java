@@ -14,7 +14,7 @@ public class Customer {
     @Column(length=65, nullable=false)
     private String name;
 
-    @Column(length=15, nullable=false, unique = true)
+    @Column(length=11, nullable=false, unique = true)
     private String cpf;
 
     public UUID getId() {
