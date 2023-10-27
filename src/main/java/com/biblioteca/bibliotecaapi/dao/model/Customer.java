@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 import java.util.UUID;
 
-@Entity(name = "tb_customer")
+@Entity(name = "tb_customers")
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -16,7 +16,6 @@ public class Customer {
 
     @Column(length=15, nullable=false, unique = true)
     private String cpf;
-//    private Address address;
 
     public UUID getId() {
         return id;
