@@ -2,7 +2,7 @@ package com.biblioteca.bibliotecaapi.dao.model;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity(name = "tb_books")
@@ -18,7 +18,7 @@ public class Book {
     private String author;
 
     @Column(name = "publish_date")
-    private Date published;
+    private LocalDate published;
     private boolean available = true;
 
     public UUID getId() {
@@ -45,11 +45,11 @@ public class Book {
         this.author = author;
     }
 
-    public Date getPublished() {
+    public LocalDate getPublished() {
         return published;
     }
 
-    public void setPublished(Date published) {
+    public void setPublished(LocalDate published) {
         this.published = published;
     }
 
