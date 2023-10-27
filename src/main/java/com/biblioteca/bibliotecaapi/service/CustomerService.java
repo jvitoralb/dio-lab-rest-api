@@ -13,7 +13,7 @@ import java.util.UUID;
 
 
 @Service
-public class CustomerService implements CustomerServiceOperations {
+public class CustomerService implements ServiceOperations<Customer, UUID> {
     @Autowired
     private CustomerRepository repository;
 

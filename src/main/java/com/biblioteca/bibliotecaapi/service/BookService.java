@@ -19,7 +19,7 @@ import java.util.UUID;
 
 
 @Service
-public class BookService implements BookServiceOperations {
+public class BookService implements ServiceOperations<Book, UUID> {
     @Autowired
     private BookRepository repository;
 
