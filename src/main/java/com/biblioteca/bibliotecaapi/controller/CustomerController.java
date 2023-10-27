@@ -1,9 +1,12 @@
 package com.biblioteca.bibliotecaapi.controller;
 
 
+import com.biblioteca.bibliotecaapi.controller.dtos.CustomerDto;
 import com.biblioteca.bibliotecaapi.controller.response.CustomResponseBody;
 import com.biblioteca.bibliotecaapi.dao.model.Customer;
 import com.biblioteca.bibliotecaapi.service.CustomerService;
+import jakarta.validation.Valid;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +27,12 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<CustomResponseBody> create(@RequestBody Customer customer) {
+    public ResponseEntity<CustomResponseBody> create(@RequestBody @Valid CustomerDto customerDto) {
+        Customer customer = new Customer();
+        BeanUtils.copyProperties(customerDto, customer);
+
         service.insert(customer);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
@@ -36,8 +43,10 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CustomResponseBody> update(@PathVariable UUID id, @RequestBody Customer customerUpdates) {
-        // precisa garantir que todas as são informações do customer passadas no RequestBody
+    public ResponseEntity<CustomResponseBody> update(@PathVariable UUID id, @RequestBody @Valid CustomerDto customerDtoUpdates) {
+        Customer customerUpdates = new Customer();
+        BeanUtils.copyProperties(customerDtoUpdates, customerUpdates);
+
         res.setMessage(service.update(id, customerUpdates));
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }

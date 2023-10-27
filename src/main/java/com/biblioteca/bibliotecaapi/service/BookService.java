@@ -8,7 +8,6 @@ import com.biblioteca.bibliotecaapi.dao.model.Loan;
 import com.biblioteca.bibliotecaapi.dao.repository.BookRepository;
 import com.biblioteca.bibliotecaapi.dao.repository.CustomerRepository;
 import com.biblioteca.bibliotecaapi.dao.repository.LoanRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,11 +50,9 @@ public class BookService implements ServiceOperations<Book, UUID> {
             () -> new BusinessException("Não foi possível encontrar livro de ID " + id)
         );
 
-        Book newBook = new Book();
-        BeanUtils.copyProperties(bookUpdates, newBook);
-        newBook.setId(oldBook.getId());
+        bookUpdates.setId(oldBook.getId());
 
-        return repository.save(newBook);
+        return repository.save(bookUpdates);
     }
 
     public void delete(UUID id) {
