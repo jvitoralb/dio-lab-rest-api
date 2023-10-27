@@ -2,6 +2,7 @@ package com.biblioteca.bibliotecaapi.controller;
 
 import com.biblioteca.bibliotecaapi.controller.response.CustomResponseBody;
 import com.biblioteca.bibliotecaapi.dao.model.Book;
+import com.biblioteca.bibliotecaapi.dao.model.Customer;
 import com.biblioteca.bibliotecaapi.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,9 +48,15 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
-    @PutMapping("/{id}/lend")
-    public ResponseEntity<CustomResponseBody> updateAvailability(@PathVariable UUID id) {
-        service.updateAvailability(id);
+    @PostMapping("/{id}/loans")
+    public ResponseEntity<CustomResponseBody> createLoan(@PathVariable UUID id, @RequestBody Customer customer) {
+        res.setMessage(service.loanBook(id, customer));
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
+    }
+
+    @PutMapping("/{id}/loans")
+    public ResponseEntity<CustomResponseBody> updateLoan(@PathVariable UUID id, @RequestBody Customer customer) {
+        res.setMessage(service.returnBook(id, customer));
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
