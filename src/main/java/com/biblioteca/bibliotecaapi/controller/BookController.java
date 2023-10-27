@@ -26,6 +26,7 @@ public class BookController {
     @PostMapping
     public ResponseEntity<CustomResponseBody> create(@RequestBody Book book) {
         service.insert(book);
+        res.setMessage(null);
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
@@ -63,6 +64,7 @@ public class BookController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable UUID id) {
         service.delete(id);
+        res.setMessage(null);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 }
