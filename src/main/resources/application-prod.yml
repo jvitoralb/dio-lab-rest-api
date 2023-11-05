@@ -9,6 +9,9 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: validate
-openapi: 3.0.1
-servers:
-  - url: https://dio-lab-rest-api-production.up.railway.app/
+
+server:
+  tomcat:
+    remoteip:
+      remote-ip-header: "x-forwarded-for"
+      protocol-header: "x-forwarded-proto"
