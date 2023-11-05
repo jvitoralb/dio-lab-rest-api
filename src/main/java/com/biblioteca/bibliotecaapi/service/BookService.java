@@ -9,6 +9,7 @@ import com.biblioteca.bibliotecaapi.dao.repository.BookRepository;
 import com.biblioteca.bibliotecaapi.dao.repository.CustomerRepository;
 import com.biblioteca.bibliotecaapi.dao.repository.LoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -63,12 +64,16 @@ public class BookService implements ServiceOperations<Book, UUID> {
     }
 
     public Loan loanBook(UUID id, Customer customer) {
+        Customer targetCustomer = customerRepository.findByCpf(customer.getCpf()).orElseThrow(
+                () -> new BusinessException("Não foi possível encontrar cliente de CPF " + customer.getCpf())
+        );
         Book targetBook = repository.findById(id).orElseThrow(
             () -> new BusinessException("Não foi possível encontrar livro de ID " + id)
         );
-        Customer targetCustomer = customerRepository.findByCpf(customer.getCpf()).orElseThrow(
-            () -> new BusinessException("Não foi possível encontrar cliente de CPF " + customer.getCpf())
-        );
+
+        if (!targetBook.isAvailable()) {
+            throw new BusinessException("O livro não está disponível", HttpStatus.OK);
+        }
 
         LocalDate expiresAt = LocalDate.now().plusDays(7);
         Loan loanDetails = loanRepository.save(new Loan(targetBook, targetCustomer, expiresAt));

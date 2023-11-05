@@ -10,8 +10,18 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    public ResponseEntity<WebResponse> handleSuccessException(BusinessException e) {
+        WebResponse resErr = new WebResponse("sucesso impedido");
+        resErr.setMessage(e.getMessage());
+        return ResponseEntity.status(e.getStatusCode()).body(resErr);
+    }
+
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<WebResponse> handleBusinessException(BusinessException e) {
+        if (e.getStatusCode().equals(HttpStatus.OK)) {
+            return handleSuccessException(e);
+        }
+
         WebResponse resErr = new WebResponse("erro cliente");
         resErr.setMessage(e.getMessage());
         return ResponseEntity.status(e.getStatusCode()).body(resErr);
