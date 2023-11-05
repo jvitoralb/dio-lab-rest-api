@@ -5,6 +5,9 @@ import com.biblioteca.bibliotecaapi.controller.dtos.CustomerDto;
 import com.biblioteca.bibliotecaapi.controller.response.CustomResponseBody;
 import com.biblioteca.bibliotecaapi.dao.model.Customer;
 import com.biblioteca.bibliotecaapi.service.CustomerService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,10 @@ public class CustomerController {
     }
 
     @PostMapping
+    @Operation(summary = "Criar novo cliente", description = "Salvar os dados de um novo cliente no banco de dados")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Operação realizada com sucesso")
+    })
     public ResponseEntity<CustomResponseBody> create(@RequestBody @Valid CustomerDto customerDto) {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerDto, customer);
@@ -37,12 +44,22 @@ public class CustomerController {
     }
 
     @GetMapping("/{cpf}")
+    @Operation(summary = "Ler cliente", description = "Dado o cpf do cliente, buscar e retornar seus dados")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Operação falhou por não encontrar cliente")
+    })
     public ResponseEntity<CustomResponseBody> read(@PathVariable String cpf) {
         res.setMessage(service.getOneByCPF(cpf));
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Atualizar cliente", description = "Dado o ID do cliente, buscar, atualizar e retornar seus dados atualizados")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Operação falhou por não encontrar cliente")
+    })
     public ResponseEntity<CustomResponseBody> update(@PathVariable UUID id, @RequestBody @Valid CustomerDto customerDtoUpdates) {
         Customer customerUpdates = new Customer();
         BeanUtils.copyProperties(customerDtoUpdates, customerUpdates);
@@ -52,6 +69,11 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Deletar cliente", description = "Dado o ID do cliente, deletar seus dados do banco de dados")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Operação realizada com sucesso e sem retorno"),
+            @ApiResponse(responseCode = "400", description = "Operação falhou por não encontrar cliente")
+    })
     public ResponseEntity<Object> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
