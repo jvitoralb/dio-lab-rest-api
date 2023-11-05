@@ -25,16 +25,15 @@ Por seguir a arquitetura `REST`, todas as operações são feitas utilizando `JS
 
 As requisições que enviam um corpo, vão ter seu corpo validado na camada mais externa da aplicação. Como a aplicação segue uma arquitetura de 3 camadas, a mais externa seria a - `controller`.
 
-Toda a regra de negócios da API está na camada de serviços - `service`, que por sua vez se comunica com a camada `DAO`.
-
-Essa última camada, utiliza o `Spring Data JPA`, para modelar e mapear os dados, bem como executar operações no banco de dados.
+Toda a regra de negócios da API está na camada de serviços - `service`, que por sua vez se comunica com a camada `DAO`. E é nessa última camada, `DAO`, onde é feita a modelagem dos dados e a execução de operações ao banco de dados.
 
 ### Controller
-Responsável por receber requisições comunicá-las a camada [service](#service), receber as respostas e devolvê-las ao cliente. Validar o corpo das requisições utilizando DTOs, e cuidar das exceções jogadas pela aplicação.
+Responsável por receber requisições e comunicá-las a camada `service`, receber as respostas e devolvê-las ao cliente. É, também, responsável por validar o corpo das requisições utilizando `DTOs`.  
+As exceções, quando jogadas pela aplicação, são tratadas nessa camada.
 
 #### WebResponse
-O controller ele faz o uso de um WebResponse Object para enviar as respostas, e esse por sua vez utiliza o `ResponseEntity` object para enviar as respostas.
-Esse objeto possui 4 propriedades:
+O controller faz o uso de uma classe customizada - WebResponse, para enviar as respostas ao cliente. Esse por sua vez utiliza o `ResponseEntity` para manipular as respostas HTTP a serem enviadas ao cliente.  
+Essa classe possui 4 propriedades:
 - `status`: mensagens customizadas de status da resposta.
     - *sucesso*: requisição recebida, executada.
         - HttpStatus: `200 - OK` / `201 - CREATED`
@@ -48,10 +47,10 @@ Esse objeto possui 4 propriedades:
 - `message`: Um objeto que contém a resposta para a requisição do cliente.
 
 ### Service
-Por conter a regra de negócio da aplicação, recebe o pedido do cliente e o responde através do `controller`. E se comunica com a camada `DAO` para acessar o banco de dados.
+Por conter a regra de negócio da aplicação, recebe o pedido do cliente e o responde através do `controller`. Possui, também, uma comunicação com a camada `DAO` o que permite acessar o banco de dados.
 
 ### DAO
-Utilizando do `Spring Data JPA`, faz a modelagem, mapeamento dos dados, e utilizando o `Repository` executa *queries* ao banco de dados.
+Utilizando o `Spring Data JPA`, faz a modelagem e mapeamento dos dados, e com o `Repository` executa *queries* ao banco de dados.
 
 ### Endpoints
 #### Usuários
