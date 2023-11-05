@@ -40,6 +40,7 @@ public class CustomerController {
 
         service.insert(customer);
 
+        res.setMessage(null);
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
@@ -76,6 +77,7 @@ public class CustomerController {
     })
     public ResponseEntity<Object> delete(@PathVariable UUID id) {
         service.delete(id);
+        res.setMessage(null);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 }
