@@ -8,5 +8,5 @@ public interface ServiceOperations<T, K> {
     List<T> getAll();
     T update(K k, T t);
     void delete(K k);
-    boolean exists(K k);
+    T exists(K k);
 }
