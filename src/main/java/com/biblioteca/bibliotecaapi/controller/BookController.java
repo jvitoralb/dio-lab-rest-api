@@ -2,7 +2,7 @@ package com.biblioteca.bibliotecaapi.controller;
 
 import com.biblioteca.bibliotecaapi.controller.dtos.BookDto;
 import com.biblioteca.bibliotecaapi.controller.dtos.CustomerDto;
-import com.biblioteca.bibliotecaapi.controller.response.CustomResponseBody;
+import com.biblioteca.bibliotecaapi.controller.response.WebResponse;
 import com.biblioteca.bibliotecaapi.dao.model.Book;
 import com.biblioteca.bibliotecaapi.dao.model.Customer;
 import com.biblioteca.bibliotecaapi.service.BookService;
@@ -24,10 +24,10 @@ import java.util.UUID;
 public class BookController {
     @Autowired
     private BookService service;
-    private CustomResponseBody res;
+    private WebResponse res;
 
     public BookController() {
-        res = new CustomResponseBody(1);
+        res = new WebResponse("sucesso");
     }
 
     @PostMapping
@@ -35,7 +35,7 @@ public class BookController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Operação realizada com sucesso")
     })
-    public ResponseEntity<CustomResponseBody> create(@RequestBody @Valid BookDto bookDto) {
+    public ResponseEntity<WebResponse> create(@RequestBody @Valid BookDto bookDto) {
         Book book = new Book();
         BeanUtils.copyProperties(bookDto, book);
 
@@ -50,7 +50,7 @@ public class BookController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso")
     })
-    public ResponseEntity<CustomResponseBody> readAll() {
+    public ResponseEntity<WebResponse> readAll() {
         res.setMessage(service.getAll());
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
@@ -61,7 +61,7 @@ public class BookController {
         @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso"),
         @ApiResponse(responseCode = "400", description = "Operação falhou por não encontrar o livro")
     })
-    public ResponseEntity<CustomResponseBody> read(@PathVariable UUID id) {
+    public ResponseEntity<WebResponse> read(@PathVariable UUID id) {
         res.setMessage(service.getOne(id));
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
@@ -72,7 +72,7 @@ public class BookController {
         @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso"),
         @ApiResponse(responseCode = "400", description = "Operação falhou por não encontrar  o livro")
     })
-    public ResponseEntity<CustomResponseBody> update(@PathVariable UUID id, @RequestBody @Valid BookDto bookDtoUpdates) {
+    public ResponseEntity<WebResponse> update(@PathVariable UUID id, @RequestBody @Valid BookDto bookDtoUpdates) {
         Book bookUpdates = new Book();
         BeanUtils.copyProperties(bookDtoUpdates, bookUpdates);
 
@@ -86,7 +86,7 @@ public class BookController {
             @ApiResponse(responseCode = "201", description = "Operação realizada com sucesso"),
             @ApiResponse(responseCode = "400", description = "Operação falhou por não encontrar o livro ou cliente")
     })
-    public ResponseEntity<CustomResponseBody> createLoan(@PathVariable UUID id, @RequestBody @Valid CustomerDto customerDto) {
+    public ResponseEntity<WebResponse> createLoan(@PathVariable UUID id, @RequestBody @Valid CustomerDto customerDto) {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerDto, customer);
 
@@ -100,7 +100,7 @@ public class BookController {
             @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso"),
             @ApiResponse(responseCode = "400", description = "Operação falhou por não encontrar o livro ou cliente")
     })
-    public ResponseEntity<CustomResponseBody> updateLoan(@PathVariable UUID id, @RequestBody @Valid CustomerDto customerDto) {
+    public ResponseEntity<WebResponse> updateLoan(@PathVariable UUID id, @RequestBody @Valid CustomerDto customerDto) {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerDto, customer);
 

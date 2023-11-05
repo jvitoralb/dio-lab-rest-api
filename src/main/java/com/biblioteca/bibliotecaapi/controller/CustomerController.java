@@ -2,7 +2,7 @@ package com.biblioteca.bibliotecaapi.controller;
 
 
 import com.biblioteca.bibliotecaapi.controller.dtos.CustomerDto;
-import com.biblioteca.bibliotecaapi.controller.response.CustomResponseBody;
+import com.biblioteca.bibliotecaapi.controller.response.WebResponse;
 import com.biblioteca.bibliotecaapi.dao.model.Customer;
 import com.biblioteca.bibliotecaapi.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,10 +23,10 @@ import java.util.UUID;
 public class CustomerController {
     @Autowired
     private CustomerService service;
-    private CustomResponseBody res;
+    private WebResponse res;
 
     public CustomerController() {
-        res = new CustomResponseBody(1);
+        res = new WebResponse("sucesso");
     }
 
     @PostMapping
@@ -34,7 +34,7 @@ public class CustomerController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Operação realizada com sucesso")
     })
-    public ResponseEntity<CustomResponseBody> create(@RequestBody @Valid CustomerDto customerDto) {
+    public ResponseEntity<WebResponse> create(@RequestBody @Valid CustomerDto customerDto) {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerDto, customer);
 
@@ -49,7 +49,7 @@ public class CustomerController {
         @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso"),
         @ApiResponse(responseCode = "400", description = "Operação falhou por não encontrar cliente")
     })
-    public ResponseEntity<CustomResponseBody> read(@PathVariable String cpf) {
+    public ResponseEntity<WebResponse> read(@PathVariable @Valid String cpf) {
         res.setMessage(service.getOneByCPF(cpf));
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
@@ -60,7 +60,7 @@ public class CustomerController {
         @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso"),
         @ApiResponse(responseCode = "400", description = "Operação falhou por não encontrar cliente")
     })
-    public ResponseEntity<CustomResponseBody> update(@PathVariable UUID id, @RequestBody @Valid CustomerDto customerDtoUpdates) {
+    public ResponseEntity<WebResponse> update(@PathVariable UUID id, @RequestBody @Valid CustomerDto customerDtoUpdates) {
         Customer customerUpdates = new Customer();
         BeanUtils.copyProperties(customerDtoUpdates, customerUpdates);
 

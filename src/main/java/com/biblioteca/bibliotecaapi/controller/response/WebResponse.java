@@ -2,23 +2,23 @@ package com.biblioteca.bibliotecaapi.controller.response;
 
 import java.util.Date;
 
-public class CustomResponseBody {
-    private int status;
+public class WebResponse {
+    private String status;
     private Date timestamp;
     private Object message;
 
-    public CustomResponseBody(int status) {
+    public WebResponse(String status) {
         this.status = status;
         this.timestamp = new Date();
     }
 
-    public CustomResponseBody(int status, Object message) {
+    public WebResponse(String status, Object message) {
         this.status = status;
         this.timestamp = new Date();
         this.message = message;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
