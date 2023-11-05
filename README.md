@@ -53,6 +53,10 @@ Por conter a regra de negócio da aplicação, recebe o pedido do cliente e o re
 Utilizando o `Spring Data JPA`, faz a modelagem e mapeamento dos dados, e com o `Repository` executa *queries* ao banco de dados.
 
 ### Endpoints
+Aqui estão todos os endpoints disponíveis na aplicação. Assim como, as respostas esperadas e, no caso dos métodos `POST` e `PUT`, o que se espera no corpo da requisição.
+
+A aplicação conta com o [OpenAPI/Swagger UI](https://dio-lab-rest-api-production.up.railway.app/swagger-ui/index.html) para executar operações nos *endpoints*.
+
 #### Usuários
 As operações envolvendo os usuários são feitas no endpoint `/customers`
 
@@ -105,3 +109,5 @@ As operações envolvendo os livro são feitas no endpoint `/books`
 ##### DELETE
 `/books/{id}`  
 - **Retorna** um status code de 204, indicando sucesso na operação e corpo da mensagem vazio.
+
+Execute as operações acima com [OpenAPI/Swagger UI](https://dio-lab-rest-api-production.up.railway.app/swagger-ui/index.html).
