@@ -12,7 +12,7 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="book_id")
     private Book book;
 

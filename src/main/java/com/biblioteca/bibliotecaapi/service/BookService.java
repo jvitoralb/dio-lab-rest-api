@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -65,8 +66,14 @@ public class BookService implements ServiceOperations<Book, UUID> {
 
     public Loan loanBook(UUID id, Customer customer) {
         Customer targetCustomer = customerRepository.findByCpf(customer.getCpf()).orElseThrow(
-                () -> new BusinessException("Não foi possível encontrar cliente de CPF " + customer.getCpf())
+            () -> new BusinessException("Não foi possível encontrar cliente de CPF " + customer.getCpf())
         );
+
+        var loan = loanRepository.findOpenLoanByCustomer(targetCustomer);
+        if (loan.isPresent()) {
+            throw new BusinessException("Há empréstimo em aberto do Cliente de CPF " + customer.getCpf());
+        }
+
         Book targetBook = repository.findById(id).orElseThrow(
             () -> new BusinessException("Não foi possível encontrar livro de ID " + id)
         );
@@ -85,22 +92,22 @@ public class BookService implements ServiceOperations<Book, UUID> {
     }
 
     public Loan returnBook(UUID id, Customer customer) {
+        Customer targetCustomer = customerRepository.findByCpf(customer.getCpf()).orElseThrow(
+            () -> new BusinessException("Não foi possível encontrar cliente de CPF " + customer.getCpf())
+        );
         Book targetBook = repository.findById(id).orElseThrow(
             () -> new BusinessException("Não foi possível encontrar livro de ID " + id)
         );
-        Customer targetCustomer = customerRepository.findByCpf(customer.getCpf()).orElseThrow(
-            () -> new BusinessException("Não foi possível encontrar cliente de CPF " + customer.getCpf())
+        Loan loan = loanRepository.findLoanToClose(targetCustomer, targetBook).orElseThrow(
+            () -> new BusinessException("Não há empréstimo em aberto do Cliente de CPF " + customer.getCpf())
         );
 
         targetBook.setAvailable(true);
         repository.save(targetBook);
 
-        Loan loan = loanRepository.findByCustomer(targetCustomer).orElseThrow(
-            () -> new BusinessException("Não foi possível encontrar empréstimo do Cliente de CPF " + customer.getCpf())
-        );
-
         loan.setFinishedAt(LocalDate.now());
         loan.setClosed(true);
+
         return loanRepository.save(loan);
     }
 }
