@@ -15,8 +15,10 @@ public class CustomerService implements ServiceOperations<Customer, UUID> {
     @Autowired
     private CustomerRepository repository;
 
-    public boolean exists(UUID id) {
-        return repository.existsById(id);
+    public Customer exists(UUID id) {
+        return repository.findById(id).orElseThrow(
+            () -> new BusinessException("Não foi possível encontrar cliente de ID " + id)
+        );
     }
 
     public void insert(Customer customer) {
@@ -50,9 +52,7 @@ public class CustomerService implements ServiceOperations<Customer, UUID> {
     }
 
     public void delete(UUID id) {
-        if (!exists(id)) {
-            throw new BusinessException("Não foi possível encontrar cliente de ID " + id);
-        }
+        exists(id);
         repository.deleteById(id);
     }
 }

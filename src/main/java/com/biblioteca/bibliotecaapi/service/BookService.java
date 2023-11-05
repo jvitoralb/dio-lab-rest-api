@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 
@@ -29,8 +28,10 @@ public class BookService implements ServiceOperations<Book, UUID> {
     @Autowired
     private LoanRepository loanRepository;
 
-    public boolean exists(UUID id) {
-        return repository.existsById(id);
+    public Book exists(UUID id) {
+        return repository.findById(id).orElseThrow(
+            () -> new BusinessException("Não foi possível encontrar livro de ID " + id)
+        );
     }
 
     public void insert(Book book) {
@@ -58,25 +59,23 @@ public class BookService implements ServiceOperations<Book, UUID> {
     }
 
     public void delete(UUID id) {
-        if (!exists(id)) {
-            throw new BusinessException("Não foi possível encontrar livro de ID " + id);
-        }
+        exists(id);
         repository.deleteById(id);
+    }
+
+    public void checkForOpenLoans(Customer customer) {
+        loanRepository.findCustomerOpenLoan(customer).ifPresent(loan -> {
+            throw new BusinessException("Há um empréstimo em aberto do Cliente de CPF " + loan.getCustomer().getCpf());
+        });
     }
 
     public Loan loanBook(UUID id, Customer customer) {
         Customer targetCustomer = customerRepository.findByCpf(customer.getCpf()).orElseThrow(
             () -> new BusinessException("Não foi possível encontrar cliente de CPF " + customer.getCpf())
         );
+        checkForOpenLoans(targetCustomer);
 
-        var loan = loanRepository.findOpenLoanByCustomer(targetCustomer);
-        if (loan.isPresent()) {
-            throw new BusinessException("Há empréstimo em aberto do Cliente de CPF " + customer.getCpf());
-        }
-
-        Book targetBook = repository.findById(id).orElseThrow(
-            () -> new BusinessException("Não foi possível encontrar livro de ID " + id)
-        );
+        Book targetBook = exists(id);
 
         if (!targetBook.isAvailable()) {
             throw new BusinessException("O livro não está disponível", HttpStatus.OK);
@@ -95,11 +94,11 @@ public class BookService implements ServiceOperations<Book, UUID> {
         Customer targetCustomer = customerRepository.findByCpf(customer.getCpf()).orElseThrow(
             () -> new BusinessException("Não foi possível encontrar cliente de CPF " + customer.getCpf())
         );
-        Book targetBook = repository.findById(id).orElseThrow(
-            () -> new BusinessException("Não foi possível encontrar livro de ID " + id)
-        );
+
+        Book targetBook = exists(id);
+
         Loan loan = loanRepository.findLoanToClose(targetCustomer, targetBook).orElseThrow(
-            () -> new BusinessException("Não há empréstimo em aberto do Cliente de CPF " + customer.getCpf())
+            () -> new BusinessException("Não há empréstimo em aberto do Cliente com o Livro de ID " + id)
         );
 
         targetBook.setAvailable(true);
