@@ -34,8 +34,8 @@ public class BookService implements ServiceOperations<Book, UUID> {
         );
     }
 
-    public void insert(Book book) {
-        repository.save(book);
+    public Book insert(Book book) {
+        return repository.save(book);
     }
 
     public Book getOne(UUID id) {
