@@ -3,7 +3,7 @@ package com.biblioteca.bibliotecaapi.controller.dtos;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public class CustomerDto {
+public class NewCustomerDto {
     @NotBlank
     @Size(max=65)
     private String name;
