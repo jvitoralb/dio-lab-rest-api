@@ -70,8 +70,8 @@ public class BookService implements ServiceOperations<Book, UUID> {
     }
 
     public Loan loanBook(UUID id, Customer customer) {
-        Customer targetCustomer = customerRepository.findByCpf(customer.getCpf()).orElseThrow(
-            () -> new BusinessException("Não foi possível encontrar cliente de CPF " + customer.getCpf())
+        Customer targetCustomer = customerRepository.findByRegistration(customer.getRegistration()).orElseThrow(
+                () -> new BusinessException("Não foi possível encontrar cliente de matrícula " + customer.getRegistration())
         );
         checkForOpenLoans(targetCustomer);
 
@@ -91,8 +91,8 @@ public class BookService implements ServiceOperations<Book, UUID> {
     }
 
     public Loan returnBook(UUID id, Customer customer) {
-        Customer targetCustomer = customerRepository.findByCpf(customer.getCpf()).orElseThrow(
-            () -> new BusinessException("Não foi possível encontrar cliente de CPF " + customer.getCpf())
+        Customer targetCustomer = customerRepository.findByRegistration(customer.getRegistration()).orElseThrow(
+                () -> new BusinessException("Não foi possível encontrar cliente de matrícula " + customer.getRegistration())
         );
 
         Book targetBook = exists(id);
