@@ -11,10 +11,16 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(length=65, nullable=false)
+    @Column(length = 65, nullable = false)
     private String name;
 
-    @Column(length=11, nullable=false, unique = true)
+//    @Column(length = 65, nullable = false, unique = true)
+//    private String email;
+
+    @Column(length = 8, nullable = false, unique = true)
+    private String registration;
+
+    @Column(length = 11, nullable = false, unique = true)
     private String cpf;
 
     public UUID getId() {
@@ -31,6 +37,14 @@ public class Customer {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getRegistration() {
+        return registration;
+    }
+
+    public void setRegistration(String registration) {
+        this.registration = registration;
     }
 
     public String getCpf() {
