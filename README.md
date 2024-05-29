@@ -58,16 +58,17 @@ Aqui estão todos os endpoints disponíveis na aplicação. Assim como, as respo
 A aplicação conta com o [OpenAPI/Swagger UI](https://dio-lab-rest-api-production.up.railway.app/swagger-ui/index.html) para executar operações nos *endpoints*.
 
 #### Usuários
-As operações envolvendo os usuários são feitas no endpoint `/customers`
+As operações envolvendo os usuários são feitas no endpoint `/customers`  
+O usuário recebe o `registration` após fazer o registro na biblioteca.
 
 ##### GET
-`/customers/{cpf}`  
+`/customers/{registration}`  
 - **Retorna** uma mensagem de sucesso contendo o usuário correspondente ao cpf indicado.
 
 ##### POST
 `/customers`  
 - **Requer** um corpo contendo as nome e cpf(sem pontos e traços).
-- **Retorna** uma mensagem de sucesso.
+- **Retorna** uma mensagem de sucesso com informações do usuário como `name`, `cpf`, `registration`.
 
 ##### PUT
 `/customers/{id}`  
@@ -75,7 +76,7 @@ As operações envolvendo os usuários são feitas no endpoint `/customers`
 - **Retorna** uma mensagem de sucesso contendo as informações atualizadas.
 
 ##### DELETE
-`/customers/{cpf}`  
+`/customers/{id}`  
 - **Retorna** um status code de 204, indicando sucesso na operação e corpo da mensagem vazio.
 
 #### Livros
