@@ -2,6 +2,7 @@ package com.biblioteca.bibliotecaapi.controller;
 
 
 import com.biblioteca.bibliotecaapi.controller.dtos.CustomerDto;
+import com.biblioteca.bibliotecaapi.controller.dtos.NewCustomerDto;
 import com.biblioteca.bibliotecaapi.controller.response.WebResponse;
 import com.biblioteca.bibliotecaapi.dao.model.Customer;
 import com.biblioteca.bibliotecaapi.service.CustomerService;
@@ -34,24 +35,24 @@ public class CustomerController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Operação realizada com sucesso")
     })
-    public ResponseEntity<WebResponse> create(@RequestBody @Valid CustomerDto customerDto) {
+    public ResponseEntity<WebResponse> create(@RequestBody @Valid NewCustomerDto newCustomerDto) {
         Customer customer = new Customer();
-        BeanUtils.copyProperties(customerDto, customer);
+        BeanUtils.copyProperties(newCustomerDto, customer);
 
-        service.insert(customer);
+        Customer insertedCustomer = service.insert(customer);
+        res.setMessage(insertedCustomer);
 
-        res.setMessage(null);
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
-    @GetMapping("/{cpf}")
-    @Operation(summary = "Ler cliente", description = "Dado o cpf do cliente, buscar e retornar seus dados")
+    @GetMapping("/{registration}")
+    @Operation(summary = "Ler cliente", description = "Dado número de registro do cliente, buscar e retornar seus dados")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Operação realizada com sucesso"),
         @ApiResponse(responseCode = "400", description = "Operação falhou por não encontrar cliente")
     })
-    public ResponseEntity<WebResponse> read(@PathVariable @Valid String cpf) {
-        res.setMessage(service.getOneByCPF(cpf));
+    public ResponseEntity<WebResponse> read(@PathVariable @Valid String registration) {
+        res.setMessage(service.getOneByRegistration(registration));
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 

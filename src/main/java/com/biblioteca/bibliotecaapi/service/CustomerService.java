@@ -21,8 +21,15 @@ public class CustomerService implements ServiceOperations<Customer, UUID> {
         );
     }
 
-    public void insert(Customer customer) {
-        repository.save(customer);
+    public Customer insert(Customer customer) {
+        String customersCountStr = String.valueOf(repository.count());
+
+        final int REGISTRATION_LENGTH = 8;
+        int digitsToTheLeft = REGISTRATION_LENGTH - customersCountStr.length();
+        String newCustomerRegistration = "0".repeat(Math.max(0, digitsToTheLeft)) + customersCountStr;
+
+        customer.setRegistration(newCustomerRegistration);
+        return repository.save(customer);
     }
 
     public List<Customer> getAll() {
@@ -32,6 +39,12 @@ public class CustomerService implements ServiceOperations<Customer, UUID> {
     public Customer getOne(UUID id) {
         return repository.findById(id).orElseThrow(
             () -> new BusinessException("Não foi possível encontrar cliente de ID " + id)
+        );
+    }
+
+    public Customer getOneByRegistration(String registration) {
+        return repository.findByRegistration(registration).orElseThrow(
+                () -> new BusinessException("Não foi possível encontrar cliente com matrícula " + registration)
         );
     }
 
