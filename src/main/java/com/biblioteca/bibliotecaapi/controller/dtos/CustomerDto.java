@@ -23,7 +23,7 @@ public class CustomerDto {
         return registration;
     }
 
-    public void setRegistration(String cpf) {
+    public void setRegistration(String registration) {
         this.registration = registration;
     }
 }
